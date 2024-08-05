@@ -1,45 +1,29 @@
-// static/js/scripts.js
-
 document.addEventListener('DOMContentLoaded', function () {
     fetch('/api/predict')
         .then(response => response.json())
         .then(data => {
-            const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-                width: document.getElementById('chart').clientWidth,
-                height: 600,
-                layout: {
-                    backgroundColor: '#ffffff',
-                    textColor: '#333',
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Current', 'Predicted'],
+                    datasets: [{
+                        label: 'Bitcoin Price',
+                        data: [parseFloat(document.getElementById('currentPrice').textContent), data.prediction[0]],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
                 },
-                grid: {
-                    vertLines: {
-                        color: '#eee',
-                    },
-                    horzLines: {
-                        color: '#eee',
-                    },
-                },
-                crosshair: {
-                    mode: LightweightCharts.CrosshairMode.Normal,
-                },
-                rightPriceScale: {
-                    borderColor: '#ccc',
-                },
-                timeScale: {
-                    borderColor: '#ccc',
-                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
             });
-
-            const lineSeries = chart.addLineSeries({
-                color: 'rgba(4, 111, 232, 1)',
-                lineWidth: 2,
-            });
-
-            const dataPoints = data.prediction.map((price, index) => ({
-                time: Date.now() / 1000 + index * 60,
-                value: price,
-            }));
-
-            lineSeries.setData(dataPoints);
-        });
+        })
+        .catch(error => console.error('Error:', error));
 });
