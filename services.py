@@ -45,19 +45,19 @@ class PredictionService:
         self.scaler = StandardScaler()
 
     def train_model(self):
-        data = CryptoData.query.order_by(CryptoData.timestamp.desc()).limit(100).all()
-        if len(data) < 2:
-            raise ValueError("Not enough data to train the model.")
-            
-        df = pd.DataFrame([d.to_dict() for d in data])
-        df['target'] = df['price'].shift(-1)
-        df = df.dropna()
-
-        X = df[['price', 'volume_24h', 'percent_change_24h']]
-        y = df['target']
+      data = CryptoData.query.order_by(CryptoData.timestamp.desc()).limit(100).all()
+      if len(data) < 2:
+         raise ValueError("Not enough data to train the model.")
         
-        X_scaled = self.scaler.fit_transform(X)
-        self.model.fit(X_scaled, y)
+      df = pd.DataFrame([d.to_dict() for d in data])
+      df['target'] = df['price'].shift(-1)
+      df = df.dropna()
+
+      X = df[['price', 'volume_24h', 'percent_change_24h']]
+      y = df['target']
+    
+      X_scaled = self.scaler.fit_transform(X)
+      self.model.fit(X_scaled, y)
 
     def predict(self):
         self.train_model()
