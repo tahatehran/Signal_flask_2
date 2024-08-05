@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/twind@0.16.16/twind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4">Crypto Dashboard</h1>
+        <div>
+            <canvas id="cryptoChart"></canvas>
+        </div>
+    </div>
+    <script>
+        fetch('/api/predict')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('cryptoChart').getContext('2d');
+                const cryptoChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [...Array(data.prediction.length).keys()],
+                        datasets: [{
+                            label: 'Crypto Prices Prediction',
+                            data: data.prediction,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
