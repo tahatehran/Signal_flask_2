@@ -3,6 +3,8 @@ import requests
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
+import numpy as np
+import ta
 
 app = Flask(__name__)
 
@@ -48,10 +50,21 @@ def train_model(data):
     model.fit(X_scaled, y)
     return model, scaler
 
+def get_buy_sell_signals(data):
+    # Example: Use RSI and SMA for buy/sell signals
+    data['rsi'] = ta.momentum.rsi(data['price'], window=14)
+    data['sma'] = ta.trend.sma_indicator(data['price'], window=14)
+
+    data['buy_signal'] = (data['rsi'] < 30) & (data['price'] > data['sma'])
+    data['sell_signal'] = (data['rsi'] > 70) & (data['price'] < data['sma'])
+
+    return data
+
 @app.route('/')
 def index():
     data = get_crypto_data()
     processed_data = preprocess_data(data)
+    processed_data = get_buy_sell_signals(processed_data)
     return render_template('index.html', data=processed_data.to_dict(orient='records'))
 
 @app.route('/api/predict', methods=['GET'])
