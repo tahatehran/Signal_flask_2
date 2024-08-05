@@ -1,29 +1,13 @@
-// static/js/scripts.js
+/* static/css/styles.css */
 
-fetch('/api/predict')
-    .then(response => response.json())
-    .then(data => {
-        const ctx = document.getElementById('cryptoChart').getContext('2d');
-        const cryptoChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [...Array(data.prediction.length).keys()],
-                datasets: [{
-                    label: 'Crypto Prices Prediction',
-                    data: data.prediction,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        beginAtZero: true
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    });
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
