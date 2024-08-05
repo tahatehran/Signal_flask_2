@@ -1,18 +1,35 @@
-/* static/css/styles.css */
-
 body {
     font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.crypto-info {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .chart-container {
-    height: 600px;
-    position: relative;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.buy-signal {
+    color: green;
+    font-weight: bold;
+}
+
+.sell-signal {
+    color: red;
+    font-weight: bold;
 }
