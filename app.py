@@ -3,12 +3,11 @@ import requests
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
-import numpy as np
 
 app = Flask(__name__)
 
 # API Key for CoinMarketCap
-API_KEY = 'key'
+API_KEY = 'your_coinmarketcap_api_key'
 
 # Endpoint for CoinMarketCap
 URL = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
@@ -23,17 +22,18 @@ def get_crypto_data():
     return data
 
 def preprocess_data(data):
-    # Simple preprocessing example
     coins = data['data']
     processed_data = []
     for coin in coins:
-        processed_data.append({
-            'name': coin['name'],
-            'symbol': coin['symbol'],
-            'price': coin['quote']['USD']['price'],
-            'volume_24h': coin['quote']['USD']['volume_24h'],
-            'percent_change_24h': coin['quote']['USD']['percent_change_24h']
-        })
+        if coin['symbol'] == 'BTC':  # Filter for Bitcoin
+            processed_data.append({
+                'name': coin['name'],
+                'symbol': coin['symbol'],
+                'price': coin['quote']['USD']['price'],
+                'volume_24h': coin['quote']['USD']['volume_24h'],
+                'percent_change_24h': coin['quote']['USD']['percent_change_24h'],
+                'market_cap': coin['quote']['USD']['market_cap']
+            })
     return pd.DataFrame(processed_data)
 
 def train_model(data):
@@ -66,3 +66,4 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
