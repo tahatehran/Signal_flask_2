@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 app = Flask(__name__)
 
 # API Key for CoinMarketCap
-API_KEY = 'your_coinmarketcap_api_key'
+API_KEY = 'bb9edc9f-53fe-4709-85d7-c51ade37920e'
 
 # Endpoint for CoinMarketCap
 URL = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
