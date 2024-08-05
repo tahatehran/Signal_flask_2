@@ -4,14 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/twind@0.16.16/twind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@3.5.1/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
-    <div class="container mx-auto p-4">
-        <h1 class="text-3xl font-bold mb-4">Crypto Dashboard</h1>
-        <div id="chart" class="chart-container"></div>
+<body>
+    <div class="container">
+        <h1>Crypto Dashboard</h1>
+        <div class="crypto-info">
+            <h2>{{ data.name }} ({{ data.symbol }})</h2>
+            <p>Current Price: $<span id="currentPrice">{{ "%.2f"|format(data.price) }}</span></p>
+            <p>24h Change: {{ "%.2f"|format(data.percent_change_24h) }}%</p>
+            <p>24h Volume: ${{ "{:,.0f}".format(data.volume_24h) }}</p>
+            <p>Market Cap: ${{ "{:,.0f}".format(data.market_cap) }}</p>
+            {% if data.buy_signal %}
+                <p class="buy-signal">Buy Signal</p>
+            {% elif data.sell_signal %}
+                <p class="sell-signal">Sell Signal</p>
+            {% else %}
+                <p>No clear signal</p>
+            {% endif %}
+        </div>
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
     </div>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
