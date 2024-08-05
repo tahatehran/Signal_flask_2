@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import joblib
+import os
 
 app = Flask(__name__)
 
@@ -22,22 +23,35 @@ def get_crypto_data():
     data = response.json()
     return data
 
+def preprocess_data(data):
+    # Simple preprocessing example
+    coins = data['data']
+    processed_data = []
+    for coin in coins:
+        processed_data.append({
+            'name': coin['name'],
+            'symbol': coin['symbol'],
+            'price': coin['quote']['USD']['price'],
+            'volume_24h': coin['quote']['USD']['volume_24h'],
+            'percent_change_24h': coin['quote']['USD']['percent_change_24h']
+        })
+    return pd.DataFrame(processed_data)
+
 @app.route('/')
 def index():
     data = get_crypto_data()
-    # Process data to get relevant information
-    return render_template('index.html', data=data)
+    processed_data = preprocess_data(data)
+    return render_template('index.html', data=processed_data.to_dict(orient='records'))
 
 @app.route('/api/predict', methods=['GET'])
 def predict():
-    # Load the pre-trained model
     model = joblib.load('models/prediction_model.pkl')
-    # Get the current data for prediction
     data = get_crypto_data()
-    # Assume we process data to create a feature vector X
-    X = ...  # Processed data to feed into model
+    processed_data = preprocess_data(data)
+    X = processed_data[['price', 'volume_24h', 'percent_change_24h']]
     prediction = model.predict(X)
     return jsonify({'prediction': prediction.tolist()})
 
 if __name__ == '__main__':
     app.run(debug=True)
+
