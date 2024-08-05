@@ -1,10 +1,9 @@
 from flask import Flask, render_template, jsonify
 import requests
 import pandas as pd
-import numpy as np
 from sklearn.linear_model import LinearRegression
-import joblib
-import os
+from sklearn.preprocessing import StandardScaler
+import numpy as np
 
 app = Flask(__name__)
 
@@ -37,6 +36,18 @@ def preprocess_data(data):
         })
     return pd.DataFrame(processed_data)
 
+def train_model(data):
+    data = data.dropna()  # Drop any rows with missing values
+    X = data[['price', 'volume_24h', 'percent_change_24h']]
+    y = data['price'].shift(-1).fillna(data['price'])  # Future price prediction
+
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    model = LinearRegression()
+    model.fit(X_scaled, y)
+    return model, scaler
+
 @app.route('/')
 def index():
     data = get_crypto_data()
@@ -45,13 +56,13 @@ def index():
 
 @app.route('/api/predict', methods=['GET'])
 def predict():
-    model = joblib.load('models/prediction_model.pkl')
     data = get_crypto_data()
     processed_data = preprocess_data(data)
+    model, scaler = train_model(processed_data)
     X = processed_data[['price', 'volume_24h', 'percent_change_24h']]
-    prediction = model.predict(X)
+    X_scaled = scaler.transform(X)
+    prediction = model.predict(X_scaled)
     return jsonify({'prediction': prediction.tolist()})
 
 if __name__ == '__main__':
     app.run(debug=True)
-
