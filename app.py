@@ -25,7 +25,7 @@ def index():
         processed_data = {}
         
     return render_template('index.html', data=processed_data)
-
+    
 @app.route('/api/predict', methods=['GET'])
 def predict():
     prediction_service = PredictionService()
