@@ -18,4 +18,3 @@ def get_buy_sell_signals(data):
     df['sell_signal'] = (df['rsi'] > 70) & (df['price'] < df['sma'])
     
     return df.to_dict(orient='records')[0]
-  
